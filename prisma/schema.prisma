@@ -1,0 +1,39 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  username String @unique
+  password String @map("password")
+  email String @unique
+  timeline TimeLine
+}
+
+model Lecturer {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  classes Class[]
+}
+
+model Class{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  description String
+  lecturerId String @db.ObjectId
+  lecturer Lecturer @relation(fields: [lecturerId], references: [id])
+  teacherId String
+  studentId String[] @db.ObjectId
+}
+
+type TimeLine {
+  classId String[] @db.ObjectId
+}
+
